@@ -22,8 +22,12 @@
   </main>
 
   <script>
+    const API_BASE = window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : window.location.origin;
+  
     const favoritesList = document.getElementById("favoritesList");
-
+  
     async function loadFavorites() {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -31,25 +35,33 @@
         window.location.href = "login.html";
         return;
       }
-
-      const res = await fetch("http://localhost:5000/api/users/favorites", {
-        headers: {
-          Authorization: token
+  
+      try {
+        const res = await fetch(`${API_BASE}/api/users/favorites`, {
+          headers: {
+            Authorization: token
+          }
+        });
+  
+        if (!res.ok) {
+          throw new Error("No se pudo cargar favoritos");
         }
-      });
-
-      const books = await res.json();
-
-      favoritesList.innerHTML = books.map(book => `
-        <div class="book-card">
-          <img src="http://localhost:5000/${book.portada}" alt="${book.titulo}" />
-          <h3>${book.titulo}</h3>
-          <p>${book.autor}</p>
-          <a href="reader.html?pdf=http://localhost:5000/${book.pdf}" target="_blank">📖 Leer</a>
-        </div>
-      `).join('');
+  
+        const books = await res.json();
+  
+        favoritesList.innerHTML = books.map(book => `
+          <div class="book-card">
+            <img src="${API_BASE}/${book.portada}" alt="${book.titulo}" />
+            <h3>${book.titulo}</h3>
+            <p>${book.autor}</p>
+            <a href="reader.html?pdf=${API_BASE}/${book.pdf}" target="_blank">📖 Leer</a>
+          </div>
+        `).join('');
+      } catch (error) {
+        favoritesList.innerHTML = `<p class="error-msg">Error al cargar favoritos.</p>`;
+      }
     }
-
+  
     // Logout
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
@@ -58,8 +70,9 @@
         window.location.href = "login.html";
       });
     }
-
+  
     loadFavorites();
   </script>
+  
 </body>
 </html>
