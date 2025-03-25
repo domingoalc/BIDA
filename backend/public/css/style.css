@@ -116,3 +116,12 @@ body {
   footer {
     margin-top: auto;
   }
+
+  /* Fondo exclusivo para index.html */
+.home-bg {
+  background-image: url("background.jpeg"); /* Ajusta la ruta */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
