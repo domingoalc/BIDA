@@ -35,3 +35,11 @@ mongoose.connect(process.env.MONGO_URI)
     });
   })
   .catch((err) => console.error("❌ Error al conectar a MongoDB:", err));
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
