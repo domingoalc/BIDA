@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lector de Libro</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="pdfViewer" src=""></iframe>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const pdfUrl = urlParams.get('pdf');
+    if (pdfUrl) document.getElementById("pdfViewer").src = pdfUrl;
+    else document.body.innerHTML = "<h2>No se encontró el archivo PDF</h2>";
+  </script>
+</body>
+</html>

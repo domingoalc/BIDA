@@ -1,0 +1,104 @@
+:root {
+  --primary-color: #ef233c;
+  --header-bg: #2b2d42;
+  --text-color: #333;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  header, footer {
+    background-color: #2b2d42;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+  }
+  
+  nav a, nav button {
+    margin: 0 10px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  main {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .auth-container {
+    max-width: 400px;
+    margin: auto;
+    padding: 30px;
+    background: white;
+    margin-top: 60px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  input, button, select {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  button {
+    background-color: #ef233c;
+    color: white;
+    border: none;
+  }
+  
+  .error-msg {
+    color: red;
+    font-size: 0.9rem;
+  }
+  
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .book-card {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 6px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .book-card img {
+    height: 250px;
+    object-fit: cover;
+    width: 100%;
+    border-radius: 5px;
+  }
+  
+  .fav-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ffb703;
+    margin-top: 5px;
+  }
+  
+  .fav-btn.filled::after {
+    content: '⭐'; /* Activo */
+  }
+  
+  .fav-btn.empty::after {
+    content: '☆'; /* Inactivo */
+  }  

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Libro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .edit-container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-top: 60px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      text-align: left;
+    }
+    textarea {
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>✏️ Editar Libro</h1>
+    <nav>
+      <a href="admin-panel.html">← Volver al Panel</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="edit-container">
+      <form id="editForm" enctype="multipart/form-data">
+        <input type="text" name="titulo" placeholder="Título" required />
+        <input type="text" name="autor" placeholder="Autor" required />
+        <input type="number" name="anio" placeholder="Año de publicación" />
+        <input type="text" name="genero" placeholder="Género" />
+        <textarea name="descripcion" placeholder="Descripción"></textarea>
+
+        <label>Portada (opcional)</label>
+        <input type="file" name="portada" accept="image/*" />
+        <label>Archivo PDF (opcional)</label>
+        <input type="file" name="pdf" accept="application/pdf" />
+
+        <button type="submit">Guardar Cambios</button>
+        <p id="editError" class="error-msg"></p>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const token = localStorage.getItem("token");
+    const params = new URLSearchParams(window.location.search);
+    const bookId = params.get("id");
+
+    if (!token || !bookId) {
+      alert("Acceso no autorizado");
+      window.location.href = "login.html";
+    }
+
+    async function cargarLibro() {
+      const res = await fetch(`http://localhost:5000/api/books/${bookId}`);
+      const libro = await res.json();
+      document.querySelector("input[name='titulo']").value = libro.titulo;
+      document.querySelector("input[name='autor']").value = libro.autor;
+      document.querySelector("input[name='anio']").value = libro.anio || "";
+      document.querySelector("input[name='genero']").value = libro.genero || "";
+      document.querySelector("textarea[name='descripcion']").value = libro.descripcion || "";
+    }
+
+    document.getElementById("editForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const res = await fetch(`http://localhost:5000/api/books/${bookId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: token
+        },
+        body: formData
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        alert("Libro actualizado correctamente");
+        window.location.href = "admin-panel.html";
+      } else {
+        document.getElementById("editError").textContent = result.error || "Error al actualizar libro";
+      }
+    });
+
+    cargarLibro();
+  </script>
+</body>
+</html>

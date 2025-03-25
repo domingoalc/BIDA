@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agregar Libro</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <div class="auth-container">
+    <h2>📚 Agregar Libro</h2>
+    <form id="bookForm" enctype="multipart/form-data">
+      <input type="text" name="titulo" placeholder="Título" required />
+      <input type="text" name="autor" placeholder="Autor" required />
+      <input type="number" name="anio" placeholder="Año" required />
+      <input type="text" name="genero" placeholder="Género" required />
+      <textarea name="descripcion" placeholder="Descripción" required></textarea>
+      <label>Portada (imagen)</label>
+      <input type="file" name="portada" accept="image/*" required />
+      <label>Archivo PDF</label>
+      <input type="file" name="pdf" accept="application/pdf" required />
+      <button type="submit">Subir Libro</button>
+      <p id="bookError" class="error-msg"></p>
+    </form>
+    <br>
+    <a href="dashboard.html">← Volver al Dashboard</a>
+  </div>
+
+  <script>
+    const bookForm = document.getElementById("bookForm");
+
+    bookForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Debes iniciar sesión como administrador.");
+        return;
+      }
+
+      const formData = new FormData(bookForm);
+
+      const res = await fetch("http://localhost:5000/api/books", {
+        method: "POST",
+        headers: {
+          Authorization: token
+        },
+        body: formData
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert("✅ Libro agregado con éxito");
+        window.location.href = "dashboard.html";
+      } else {
+        document.getElementById("bookError").textContent = result.error || "Error al subir libro";
+      }
+    });
+  </script>
+</body>
+</html>

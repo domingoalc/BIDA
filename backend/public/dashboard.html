@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi Biblioteca</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <header>
+    <h1>📖 Mi Biblioteca</h1>
+    <nav>
+      <button id="logoutBtn">Cerrar sesión</button>
+      <a href="favorites.html">⭐ Ver Favoritos</a>
+      <a href="admin-panel.html" id="adminPanelBtn" style="display: none;">⚙️ Gestionar Libros</a>
+    </nav>
+  </header>
+
+  <main>
+    <a href="add-book.html" id="adminBtn" style="display: none;">➕ Agregar Libro</a>
+    <input type="text" id="searchInput" placeholder="Buscar por título..." />
+    <select id="genreFilter">
+      <option value="">Todos los géneros</option>
+    </select>
+    <div class="book-grid" id="bookList">
+      <!-- Los libros se cargarán aquí -->
+    </div>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

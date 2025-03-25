@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .admin-table th, .admin-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .admin-table th {
+      background-color: #2b2d42;
+      color: white;
+    }
+
+    .action-btn {
+      margin: 0 5px;
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .edit-btn {
+      background-color: #0077b6;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #d90429;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 Panel de Administración</h1>
+    <nav>
+      <a href="dashboard.html">← Volver a Biblioteca</a>
+      <button id="logoutBtn">Cerrar sesión</button>
+    </nav>
+  </header>
+
+  <main>
+    <table class="admin-table" id="adminTable">
+      <thead>
+        <tr>
+          <th>Portada</th>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Género</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Libros se cargarán aquí -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Acceso denegado. Debes iniciar sesión como administrador.");
+      window.location.href = "login.html";
+    }
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    if (payload.role !== "admin") {
+      alert("Acceso restringido solo para administradores.");
+      window.location.href = "dashboard.html";
+    }
+
+    async function cargarLibrosAdmin() {
+      const res = await fetch("http://localhost:5000/api/books");
+      const libros = await res.json();
+
+      const tabla = document.querySelector("#adminTable tbody");
+      tabla.innerHTML = libros.map(libro => `
+        <tr>
+          <td><img src="http://localhost:5000/${libro.portada}" alt="${libro.titulo}" width="60"></td>
+          <td>${libro.titulo}</td>
+          <td>${libro.autor}</td>
+          <td>${libro.genero || '-'}</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editarLibro('${libro._id}')">Editar</button>
+            <button class="action-btn delete-btn" onclick="eliminarLibro('${libro._id}')">Eliminar</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function editarLibro(id) {
+      window.location.href = `edit-book.html?id=${id}`;
+    }
+
+    async function eliminarLibro(id) {
+      if (!confirm("¿Estás seguro de que deseas eliminar este libro?")) return;
+      const res = await fetch(`http://localhost:5000/api/books/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: token
+        }
+      });
+      const result = await res.json();
+      if (res.ok) {
+        alert("Libro eliminado exitosamente.");
+        cargarLibrosAdmin();
+      } else {
+        alert(result.error || "Error al eliminar el libro.");
+      }
+    }
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    });
+
+    cargarLibrosAdmin();
+  </script>
+</body>
+</html>
