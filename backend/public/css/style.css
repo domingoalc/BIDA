@@ -102,3 +102,17 @@ body {
   .fav-btn.empty::after {
     content: '☆'; /* Inactivo */
   }  
+
+  html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  main {
+    flex: 1; /* Esto empuja el footer hacia abajo */
+  }
+  
+  footer {
+    margin-top: auto;
+  }
