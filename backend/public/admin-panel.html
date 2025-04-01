@@ -40,6 +40,14 @@
       background-color: #d90429;
       color: white;
     }
+
+    .responsive-header nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -50,6 +58,8 @@
     </div>
     <nav>
       <a href="dashboard.html"><span class="icon">🏠</span> <span class="desktop-only">Inicio</span></a>
+      <a href="admin-panel.html" class="desktop-only"><span class="icon">🛠️</span> <span class="desktop-only">Gestionar</span></a>
+      <a href="favorites.html"><span class="icon">⭐</span> <span class="desktop-only">Favoritos</span></a>
       <button id="logoutBtn"><span class="icon">🚪</span> <span class="desktop-only">Cerrar sesión</span></button>
     </nav>
   </header>
