@@ -52,6 +52,10 @@
   </main>
 
   <script>
+    const API_BASE = window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : window.location.origin;
+
     const token = localStorage.getItem("token");
     const params = new URLSearchParams(window.location.search);
     const bookId = params.get("id");
@@ -62,7 +66,7 @@
     }
 
     async function cargarLibro() {
-      const res = await fetch(`/api/books/${bookId}`);
+      const res = await fetch(`${API_BASE}/api/books/${bookId}`);
       const libro = await res.json();
       document.querySelector("input[name='titulo']").value = libro.titulo;
       document.querySelector("input[name='autor']").value = libro.autor;
@@ -77,7 +81,7 @@
       e.preventDefault();
       const formData = Object.fromEntries(new FormData(e.target));
 
-      const res = await fetch(`/api/books/${bookId}`, {
+      const res = await fetch(`${API_BASE}/api/books/${bookId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
