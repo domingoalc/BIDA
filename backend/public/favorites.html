@@ -24,6 +24,11 @@
   </main>
 
   <script>
+    // API base dinámico
+    const API_BASE = window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : window.location.origin;
+
     const favoritesList = document.getElementById("favoritesList");
 
     async function loadFavorites() {
@@ -34,7 +39,7 @@
         return;
       }
 
-      const res = await fetch(`${window.location.origin}/api/users/favorites`, {
+      const res = await fetch(`${API_BASE}/api/users/favorites`, {
         headers: {
           Authorization: token
         }
