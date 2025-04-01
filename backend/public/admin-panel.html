@@ -52,94 +52,86 @@
   </header>
 
   <main>
-    <table class="admin-table" id="adminTable">
-      <thead>
-        <tr>
-          <th>Portada</th>
-          <th>Título</th>
-          <th>Autor</th>
-          <th>Género</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Libros se cargarán aquí -->
-      </tbody>
-    </table>
+    <div class="book-grid-container">
+      <div style="width: 100%; max-width: 1000px;">
+        <table class="admin-table" id="adminTable">
+          <thead>
+            <tr>
+              <th>Portada</th>
+              <th>Título</th>
+              <th>Autor</th>
+              <th>Género</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Libros se cargarán aquí -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </main>
 
   <script>
-    const API_BASE = window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : window.location.origin;
-  
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Acceso denegado. Debes iniciar sesión como administrador.");
       window.location.href = "login.html";
     }
-  
+
     const payload = JSON.parse(atob(token.split('.')[1]));
     if (payload.role !== "admin") {
       alert("Acceso restringido solo para administradores.");
       window.location.href = "dashboard.html";
     }
-  
+
     async function cargarLibrosAdmin() {
-      try {
-        const res = await fetch(`${API_BASE}/api/books`);
-        const libros = await res.json();
-  
-        const tabla = document.querySelector("#adminTable tbody");
-        tabla.innerHTML = libros.map(libro => `
-          <tr>
-            <td><img src="${API_BASE}/${libro.portada}" alt="${libro.titulo}" width="60"></td>
-            <td>${libro.titulo}</td>
-            <td>${libro.autor}</td>
-            <td>${libro.genero || '-'}</td>
-            <td>
-              <button class="action-btn edit-btn" onclick="editarLibro('${libro._id}')">Editar</button>
-              <button class="action-btn delete-btn" onclick="eliminarLibro('${libro._id}')">Eliminar</button>
-            </td>
-          </tr>
-        `).join("");
-      } catch (error) {
-        alert("Error al cargar libros del administrador.");
-      }
+      const res = await fetch(`${window.location.origin}/api/books`);
+      const libros = await res.json();
+
+      const tabla = document.querySelector("#adminTable tbody");
+      tabla.innerHTML = libros.map(libro => `
+        <tr>
+          <td><img src="${libro.portada}" alt="${libro.titulo}" width="60"></td>
+          <td>${libro.titulo}</td>
+          <td>${libro.autor}</td>
+          <td>${libro.genero || '-'}</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editarLibro('${libro._id}')">Editar</button>
+            <button class="action-btn delete-btn" onclick="eliminarLibro('${libro._id}')">Eliminar</button>
+          </td>
+        </tr>
+      `).join("");
     }
-  
+
     function editarLibro(id) {
       window.location.href = `edit-book.html?id=${id}`;
     }
-  
+
     async function eliminarLibro(id) {
       if (!confirm("¿Estás seguro de que deseas eliminar este libro?")) return;
-      try {
-        const res = await fetch(`${API_BASE}/api/books/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: token
-          }
-        });
-        const result = await res.json();
-        if (res.ok) {
-          alert("Libro eliminado exitosamente.");
-          cargarLibrosAdmin();
-        } else {
-          alert(result.error || "Error al eliminar el libro.");
+      const res = await fetch(`${window.location.origin}/api/books/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: token
         }
-      } catch (error) {
-        alert("Error de red al eliminar libro.");
+      });
+      const result = await res.json();
+      if (res.ok) {
+        alert("Libro eliminado exitosamente.");
+        cargarLibrosAdmin();
+      } else {
+        alert(result.error || "Error al eliminar el libro.");
       }
     }
-  
+
+    // Logout
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.removeItem("token");
       window.location.href = "login.html";
     });
-  
+
     cargarLibrosAdmin();
   </script>
-  
 </body>
 </html>

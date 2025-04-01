@@ -35,17 +35,15 @@
 
   <main>
     <div class="edit-container">
-      <form id="editForm" enctype="multipart/form-data">
+      <form id="editForm">
         <input type="text" name="titulo" placeholder="Título" required />
         <input type="text" name="autor" placeholder="Autor" required />
         <input type="number" name="anio" placeholder="Año de publicación" />
         <input type="text" name="genero" placeholder="Género" />
         <textarea name="descripcion" placeholder="Descripción"></textarea>
 
-        <label>Portada (opcional)</label>
-        <input type="file" name="portada" accept="image/*" />
-        <label>Archivo PDF (opcional)</label>
-        <input type="file" name="pdf" accept="application/pdf" />
+        <input type="url" name="portada" placeholder="Enlace de portada (URL)" />
+        <input type="url" name="pdf" placeholder="Enlace del archivo PDF (URL)" />
 
         <button type="submit">Guardar Cambios</button>
         <p id="editError" class="error-msg"></p>
@@ -54,78 +52,50 @@
   </main>
 
   <script>
-    const API_BASE = window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : window.location.origin;
-  
     const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Acceso denegado. Debes iniciar sesión como administrador.");
+    const params = new URLSearchParams(window.location.search);
+    const bookId = params.get("id");
+
+    if (!token || !bookId) {
+      alert("Acceso no autorizado");
       window.location.href = "login.html";
     }
-  
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    if (payload.role !== "admin") {
-      alert("Acceso restringido solo para administradores.");
-      window.location.href = "dashboard.html";
+
+    async function cargarLibro() {
+      const res = await fetch(`/api/books/${bookId}`);
+      const libro = await res.json();
+      document.querySelector("input[name='titulo']").value = libro.titulo;
+      document.querySelector("input[name='autor']").value = libro.autor;
+      document.querySelector("input[name='anio']").value = libro.anio || "";
+      document.querySelector("input[name='genero']").value = libro.genero || "";
+      document.querySelector("textarea[name='descripcion']").value = libro.descripcion || "";
+      document.querySelector("input[name='portada']").value = libro.portada || "";
+      document.querySelector("input[name='pdf']").value = libro.pdf || "";
     }
-  
-    async function cargarLibrosAdmin() {
-      try {
-        const res = await fetch(`${API_BASE}/api/books`);
-        const libros = await res.json();
-  
-        const tabla = document.querySelector("#adminTable tbody");
-        tabla.innerHTML = libros.map(libro => `
-          <tr>
-            <td><img src="${API_BASE}/${libro.portada}" alt="${libro.titulo}" width="60"></td>
-            <td>${libro.titulo}</td>
-            <td>${libro.autor}</td>
-            <td>${libro.genero || '-'}</td>
-            <td>
-              <button class="action-btn edit-btn" onclick="editarLibro('${libro._id}')">Editar</button>
-              <button class="action-btn delete-btn" onclick="eliminarLibro('${libro._id}')">Eliminar</button>
-            </td>
-          </tr>
-        `).join("");
-      } catch (error) {
-        alert("Error al cargar libros");
+
+    document.getElementById("editForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(e.target));
+
+      const res = await fetch(`/api/books/${bookId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        alert("Libro actualizado correctamente");
+        window.location.href = "admin-panel.html";
+      } else {
+        document.getElementById("editError").textContent = result.error || "Error al actualizar libro";
       }
-    }
-  
-    function editarLibro(id) {
-      window.location.href = `edit-book.html?id=${id}`;
-    }
-  
-    async function eliminarLibro(id) {
-      if (!confirm("¿Estás seguro de que deseas eliminar este libro?")) return;
-      try {
-        const res = await fetch(`${API_BASE}/api/books/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: token
-          }
-        });
-        const result = await res.json();
-        if (res.ok) {
-          alert("Libro eliminado exitosamente.");
-          cargarLibrosAdmin();
-        } else {
-          alert(result.error || "Error al eliminar el libro.");
-        }
-      } catch (error) {
-        alert("Error de red");
-      }
-    }
-  
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      localStorage.removeItem("token");
-      window.location.href = "login.html";
     });
-  
-    cargarLibrosAdmin();
+
+    cargarLibro();
   </script>
-  
-  
 </body>
 </html>
