@@ -165,3 +165,50 @@ body {
       transform: translateY(0);
     }
   }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+  
+  .responsive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .responsive-header nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .icon {
+    font-size: 1.2rem;
+  }
+  
+  .desktop-only {
+    display: none;
+  }
+  
+  @media (min-width: 768px) {
+    .desktop-only {
+      display: inline;
+    }
+  
+    .responsive-header nav {
+      gap: 20px;
+    }
+  }  
