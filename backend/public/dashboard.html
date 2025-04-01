@@ -7,12 +7,15 @@
   <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-  <header>
-    <h1>📖 Mi Biblioteca</h1>
+  <header class="responsive-header">
+    <div class="logo-container">
+      <img src="../uploads/img/logo.png" alt="BIDA Logo" class="logo">
+      <h1 class="desktop-only">📖 Mi Biblioteca</h1>
+    </div>
     <nav>
-      <button id="logoutBtn">Cerrar sesión</button>
-      <a href="favorites.html">⭐ Ver Favoritos</a>
-      <a href="admin-panel.html" id="adminPanelBtn" style="display: none;">🛠️ Gestionar Libros</a>
+      <a href="favorites.html"><span class="icon">⭐</span> <span class="desktop-only">Favoritos</span></a>
+      <a href="admin-panel.html" id="adminPanelBtn" style="display:none;"><span class="icon">🛠️</span> <span class="desktop-only">Gestionar</span></a>
+      <button id="logoutBtn"><span class="icon">🚪</span> <span class="desktop-only">Cerrar sesión</span></button>
     </nav>
   </header>
 
@@ -31,6 +34,10 @@
       </div>
     </div>
   </main>
+
+  <footer>
+    © 2025 Bookify Lite - Todos los derechos reservados
+  </footer>
 
   <script src="js/main.js"></script>
 </body>

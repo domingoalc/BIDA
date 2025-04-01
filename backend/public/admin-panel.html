@@ -43,34 +43,37 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1>📚 Panel de Administración</h1>
+  <header class="responsive-header">
+    <div class="logo-container">
+      <img src="../uploads/img/logo.png" alt="BIDA Logo" class="logo">
+      <h1 class="desktop-only">📚 Panel de Administración</h1>
+    </div>
     <nav>
-      <a href="dashboard.html">← Volver a Biblioteca</a>
-      <button id="logoutBtn">Cerrar sesión</button>
+      <a href="dashboard.html"><span class="icon">🏠</span> <span class="desktop-only">Inicio</span></a>
+      <button id="logoutBtn"><span class="icon">🚪</span> <span class="desktop-only">Cerrar sesión</span></button>
     </nav>
   </header>
 
   <main>
-    <div class="book-grid-container">
-      <div style="width: 100%; max-width: 1000px;">
-        <table class="admin-table" id="adminTable">
-          <thead>
-            <tr>
-              <th>Portada</th>
-              <th>Título</th>
-              <th>Autor</th>
-              <th>Género</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Libros se cargarán aquí -->
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <table class="admin-table" id="adminTable">
+      <thead>
+        <tr>
+          <th>Portada</th>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Género</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Libros se cargarán aquí -->
+      </tbody>
+    </table>
   </main>
+
+  <footer>
+    © 2025 Bookify Lite - Todos los derechos reservados
+  </footer>
 
   <script>
     const token = localStorage.getItem("token");
@@ -86,7 +89,7 @@
     }
 
     async function cargarLibrosAdmin() {
-      const res = await fetch(`${window.location.origin}/api/books`);
+      const res = await fetch("/api/books");
       const libros = await res.json();
 
       const tabla = document.querySelector("#adminTable tbody");
@@ -110,7 +113,7 @@
 
     async function eliminarLibro(id) {
       if (!confirm("¿Estás seguro de que deseas eliminar este libro?")) return;
-      const res = await fetch(`${window.location.origin}/api/books/${id}`, {
+      const res = await fetch(`/api/books/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: token

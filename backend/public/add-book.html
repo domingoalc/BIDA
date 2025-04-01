@@ -2,11 +2,23 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agregar Libro</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <header class="responsive-header">
+    <div class="logo-container">
+      <img src="../uploads/img/logo.png" alt="BIDA Logo" class="logo">
+      <h1 class="desktop-only">📚 Agregar Libro</h1>
+    </div>
+    <nav>
+      <a href="dashboard.html"><span class="icon">🏠</span> <span class="desktop-only">Inicio</span></a>
+      <a href="admin-panel.html"><span class="icon">🛠️</span> <span class="desktop-only">Gestionar</span></a>
+      <button id="logoutBtn"><span class="icon">🚪</span> <span class="desktop-only">Cerrar sesión</span></button>
+    </nav>
+  </header>
+
   <div class="auth-container">
     <h2>📚 Agregar Libro</h2>
     <form id="bookForm">
@@ -26,11 +38,11 @@
     <a href="dashboard.html">← Volver al Dashboard</a>
   </div>
 
-  <script>
-    const API_BASE = window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : window.location.origin;
+  <footer>
+    © 2025 Bookify Lite - Todos los derechos reservados
+  </footer>
 
+  <script>
     const bookForm = document.getElementById("bookForm");
 
     bookForm.addEventListener("submit", async (e) => {
@@ -44,7 +56,7 @@
 
       const formData = Object.fromEntries(new FormData(bookForm));
 
-      const res = await fetch(`${API_BASE}/api/books`, {
+      const res = await fetch("/api/books", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,6 +73,12 @@
       } else {
         document.getElementById("bookError").textContent = result.error || "Error al subir libro";
       }
+    });
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
     });
   </script>
 </body>
