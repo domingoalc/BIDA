@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Editar Libro</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css"/>
   <style>
     .edit-container {
       max-width: 500px;
@@ -23,6 +23,13 @@
     textarea {
       height: 100px;
     }
+    .responsive-header nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
   </style>
 </head>
 <body>
@@ -34,6 +41,7 @@
     <nav>
       <a href="dashboard.html"><span class="icon">🏠</span> <span class="desktop-only">Inicio</span></a>
       <a href="admin-panel.html"><span class="icon">🛠️</span> <span class="desktop-only">Gestionar</span></a>
+      <a href="favorites.html"><span class="icon">⭐</span> <span class="desktop-only">Favoritos</span></a>
       <button id="logoutBtn"><span class="icon">🚪</span> <span class="desktop-only">Cerrar sesión</span></button>
     </nav>
   </header>
@@ -46,10 +54,8 @@
         <input type="number" name="anio" placeholder="Año de publicación" />
         <input type="text" name="genero" placeholder="Género" />
         <textarea name="descripcion" placeholder="Descripción"></textarea>
-
         <input type="url" name="portada" placeholder="Enlace de portada (URL)" />
         <input type="url" name="pdf" placeholder="Enlace del archivo PDF (URL)" />
-
         <button type="submit">Guardar Cambios</button>
         <p id="editError" class="error-msg"></p>
       </form>
@@ -85,7 +91,6 @@
     document.getElementById("editForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = Object.fromEntries(new FormData(e.target));
-
       const res = await fetch(`/api/books/${bookId}`, {
         method: "PUT",
         headers: {
@@ -94,7 +99,6 @@
         },
         body: JSON.stringify(formData)
       });
-
       const result = await res.json();
       if (res.ok) {
         alert("Libro actualizado correctamente");
@@ -106,7 +110,6 @@
 
     cargarLibro();
 
-    // Logout
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.removeItem("token");
       window.location.href = "login.html";
