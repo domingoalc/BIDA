@@ -9,16 +9,16 @@
 <body>
   <div class="auth-container">
     <h2>📚 Agregar Libro</h2>
-    <form id="bookForm" enctype="multipart/form-data">
+    <form id="bookForm">
       <input type="text" name="titulo" placeholder="Título" required />
       <input type="text" name="autor" placeholder="Autor" required />
       <input type="number" name="anio" placeholder="Año" required />
       <input type="text" name="genero" placeholder="Género" required />
       <textarea name="descripcion" placeholder="Descripción" required></textarea>
-      <label>Portada (imagen)</label>
-      <input type="file" name="portada" accept="image/*" required />
-      <label>Archivo PDF</label>
-      <input type="file" name="pdf" accept="application/pdf" required />
+
+      <input type="url" name="portada" placeholder="Enlace de la imagen de portada" required />
+      <input type="url" name="pdf" placeholder="Enlace del archivo PDF" required />
+
       <button type="submit">Subir Libro</button>
       <p id="bookError" class="error-msg"></p>
     </form>
@@ -27,46 +27,37 @@
   </div>
 
   <script>
-    const API_BASE = window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : window.location.origin;
-  
     const bookForm = document.getElementById("bookForm");
-  
+
     bookForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const token = localStorage.getItem("token");
-  
+
       if (!token) {
         alert("Debes iniciar sesión como administrador.");
         return;
       }
-  
-      const formData = new FormData(bookForm);
-  
-      try {
-        const res = await fetch(`${API_BASE}/api/books`, {
-          method: "POST",
-          headers: {
-            Authorization: token
-            // No agregamos 'Content-Type' manualmente
-          },
-          body: formData
-        });
-  
-        const result = await res.json();
-  
-        if (res.ok) {
-          alert("✅ Libro agregado con éxito");
-          window.location.href = "dashboard.html";
-        } else {
-          document.getElementById("bookError").textContent = result.error || "Error al subir libro";
-        }
-      } catch (err) {
-        document.getElementById("bookError").textContent = "Error de red o servidor";
+
+      const formData = Object.fromEntries(new FormData(bookForm));
+
+      const res = await fetch("/api/books", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert("✅ Libro agregado con éxito");
+        window.location.href = "dashboard.html";
+      } else {
+        document.getElementById("bookError").textContent = result.error || "Error al subir libro";
       }
     });
   </script>
-  
 </body>
 </html>

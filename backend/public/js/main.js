@@ -1,15 +1,10 @@
-// API base dinámico según entorno
-const API_BASE = window.location.hostname === "localhost"
-  ? "http://localhost:5000"
-  : window.location.origin;
-
 // Registro
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
   registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(registerForm));
-    const res = await fetch(`${API_BASE}/api/auth/register`, {
+    const res = await fetch("http://localhost:5000/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -30,7 +25,7 @@ if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(loginForm));
-    const res = await fetch(`${API_BASE}/api/auth/login`, {
+    const res = await fetch("http://localhost:5000/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -79,10 +74,10 @@ async function loadBooks() {
   if (search) query.append("titulo", search);
   if (genre) query.append("genero", genre);
 
-  const res = await fetch(`${API_BASE}/api/books?${query.toString()}`);
+  const res = await fetch(`http://localhost:5000/api/books?${query.toString()}`);
   const books = await res.json();
 
-  const favorites = await fetchFavorites();
+  const favorites = await fetchFavorites(); // Obtener favoritos actuales
   const favoriteIds = favorites.map(book => book._id);
 
   const uniqueGenres = [...new Set(books.map(book => book.genero).filter(Boolean))];
@@ -95,10 +90,10 @@ async function loadBooks() {
     const isFav = favoriteIds.includes(book._id);
     return `
       <div class="book-card">
-        <img src="${API_BASE}/${book.portada}" alt="${book.titulo}" />
+        <img src="${book.portada}" alt="${book.titulo}" />
         <h3>${book.titulo}</h3>
         <p>${book.autor}</p>
-        <a href="reader.html?pdf=${API_BASE}/${book.pdf}" target="_blank">📖 Leer</a>
+        <a href="reader.html?pdf=${book.pdf}" target="_blank">📖 Leer</a>
         <button class="fav-btn ${isFav ? 'filled' : 'empty'}" onclick="toggleFavorite('${book._id}', this)"></button>
       </div>
     `;
@@ -109,7 +104,7 @@ async function fetchFavorites() {
   const token = localStorage.getItem("token");
   if (!token) return [];
 
-  const res = await fetch(`${API_BASE}/api/users/favorites`, {
+  const res = await fetch("http://localhost:5000/api/users/favorites", {
     headers: {
       Authorization: token
     }
@@ -130,7 +125,7 @@ async function toggleFavorite(bookId, btnElement) {
   }
 
   const isRemoving = btnElement.classList.contains("filled");
-  const url = `${API_BASE}/api/users/favorites`;
+  const url = "http://localhost:5000/api/users/favorites";
 
   try {
     const res = await fetch(url, {

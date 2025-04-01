@@ -6,7 +6,7 @@ const bookSchema = new mongoose.Schema({
   anio: { type: Number },
   genero: { type: String },
   descripcion: { type: String },
-  portada: { type: String }, // Ruta al archivo de imagen
+  portada: { type: String }, // Ahora se espera una URL
   pdf: { type: String }       // Ruta al archivo PDF
 }, { timestamps: true });
 
